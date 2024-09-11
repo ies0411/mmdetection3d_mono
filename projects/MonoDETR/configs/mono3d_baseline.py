@@ -64,97 +64,97 @@ model = dict(
         dcn=dict(type="DCNv2", deform_groups=1, fallback_on_stride=False),
         stage_with_dcn=(False, False, True, True),
     ),
-    img_neck=dict(type="CPFPN", in_channels=[768, 1024], out_channels=256, num_outs=2),
-    pts_bbox_head=dict(
-        type="PETRHead",
-        num_classes=10,
-        in_channels=256,
-        num_query=900,
-        LID=True,
-        with_position=True,
-        with_multiview=True,
-        position_range=[-61.2, -61.2, -10.0, 61.2, 61.2, 10.0],
-        normedlinear=False,
-        transformer=dict(
-            type="PETRTransformer",
-            decoder=dict(
-                type="PETRTransformerDecoder",
-                return_intermediate=True,
-                num_layers=6,
-                transformerlayers=dict(
-                    type="PETRTransformerDecoderLayer",
-                    attn_cfgs=[
-                        dict(
-                            type="MultiheadAttention",
-                            embed_dims=256,
-                            num_heads=8,
-                            attn_drop=0.1,
-                            dropout_layer=dict(type="Dropout", drop_prob=0.1),
-                        ),
-                        dict(
-                            type="PETRMultiheadAttention",
-                            embed_dims=256,
-                            num_heads=8,
-                            attn_drop=0.1,
-                            dropout_layer=dict(type="Dropout", drop_prob=0.1),
-                        ),
-                    ],
-                    feedforward_channels=2048,
-                    ffn_dropout=0.1,
-                    operation_order=(
-                        "self_attn",
-                        "norm",
-                        "cross_attn",
-                        "norm",
-                        "ffn",
-                        "norm",
-                    ),
-                ),
-            ),
-        ),
-        bbox_coder=dict(
-            type="NMSFreeCoder",
-            post_center_range=[-61.2, -61.2, -10.0, 61.2, 61.2, 10.0],
-            pc_range=point_cloud_range,
-            max_num=300,
-            voxel_size=voxel_size,
-            num_classes=10,
-        ),
-        positional_encoding=dict(
-            type="SinePositionalEncoding3D", num_feats=128, normalize=True
-        ),
-        loss_cls=dict(
-            type="mmdet.FocalLoss",
-            use_sigmoid=True,
-            gamma=2.0,
-            alpha=0.25,
-            loss_weight=2.0,
-        ),
-        loss_bbox=dict(type="mmdet.L1Loss", loss_weight=0.25),
-        loss_iou=dict(type="mmdet.GIoULoss", loss_weight=0.0),
-    ),
-    # model training and testing settings
-    train_cfg=dict(
-        pts=dict(
-            grid_size=[512, 512, 1],
-            voxel_size=voxel_size,
-            point_cloud_range=point_cloud_range,
-            out_size_factor=4,
-            assigner=dict(
-                type="HungarianAssigner3D",
-                cls_cost=dict(type="FocalLossCost", weight=2.0),
-                reg_cost=dict(type="BBox3DL1Cost", weight=0.25),
-                iou_cost=dict(
-                    type="IoUCost", weight=0.0
-                ),  # Fake cost. Just to be compatible with DETR head.
-                pc_range=point_cloud_range,
-            ),
-        )
-    ),
+    #     img_neck=dict(type="CPFPN", in_channels=[768, 1024], out_channels=256, num_outs=2),
+    #     pts_bbox_head=dict(
+    #         type="PETRHead",
+    #         num_classes=10,
+    #         in_channels=256,
+    #         num_query=900,
+    #         LID=True,
+    #         with_position=True,
+    #         with_multiview=True,
+    #         position_range=[-61.2, -61.2, -10.0, 61.2, 61.2, 10.0],
+    #         normedlinear=False,
+    #         transformer=dict(
+    #             type="PETRTransformer",
+    #             decoder=dict(
+    #                 type="PETRTransformerDecoder",
+    #                 return_intermediate=True,
+    #                 num_layers=6,
+    #                 transformerlayers=dict(
+    #                     type="PETRTransformerDecoderLayer",
+    #                     attn_cfgs=[
+    #                         dict(
+    #                             type="MultiheadAttention",
+    #                             embed_dims=256,
+    #                             num_heads=8,
+    #                             attn_drop=0.1,
+    #                             dropout_layer=dict(type="Dropout", drop_prob=0.1),
+    #                         ),
+    #                         dict(
+    #                             type="PETRMultiheadAttention",
+    #                             embed_dims=256,
+    #                             num_heads=8,
+    #                             attn_drop=0.1,
+    #                             dropout_layer=dict(type="Dropout", drop_prob=0.1),
+    #                         ),
+    #                     ],
+    #                     feedforward_channels=2048,
+    #                     ffn_dropout=0.1,
+    #                     operation_order=(
+    #                         "self_attn",
+    #                         "norm",
+    #                         "cross_attn",
+    #                         "norm",
+    #                         "ffn",
+    #                         "norm",
+    #                     ),
+    #                 ),
+    #             ),
+    #         ),
+    #         bbox_coder=dict(
+    #             type="NMSFreeCoder",
+    #             post_center_range=[-61.2, -61.2, -10.0, 61.2, 61.2, 10.0],
+    #             pc_range=point_cloud_range,
+    #             max_num=300,
+    #             voxel_size=voxel_size,
+    #             num_classes=10,
+    #         ),
+    #         positional_encoding=dict(
+    #             type="SinePositionalEncoding3D", num_feats=128, normalize=True
+    #         ),
+    #         loss_cls=dict(
+    #             type="mmdet.FocalLoss",
+    #             use_sigmoid=True,
+    #             gamma=2.0,
+    #             alpha=0.25,
+    #             loss_weight=2.0,
+    #         ),
+    #         loss_bbox=dict(type="mmdet.L1Loss", loss_weight=0.25),
+    #         loss_iou=dict(type="mmdet.GIoULoss", loss_weight=0.0),
+    #     ),
+    #     # model training and testing settings
+    #     train_cfg=dict(
+    #         pts=dict(
+    #             grid_size=[512, 512, 1],
+    #             voxel_size=voxel_size,
+    #             point_cloud_range=point_cloud_range,
+    #             out_size_factor=4,
+    #             assigner=dict(
+    #                 type="HungarianAssigner3D",
+    #                 cls_cost=dict(type="FocalLossCost", weight=2.0),
+    #                 reg_cost=dict(type="BBox3DL1Cost", weight=0.25),
+    #                 iou_cost=dict(
+    #                     type="IoUCost", weight=0.0
+    #                 ),  # Fake cost. Just to be compatible with DETR head.
+    #                 pc_range=point_cloud_range,
+    #             ),
+    #         )
+    #     ),
 )
+# data_root = "data/nuscenes/"
 
 dataset_type = "NuScenesDataset"
-# data_root = "data/nuscenes/"
 data_root = "/mnt/nas3/Data/nuScenes/v1.0-trainval/"
 
 backend_args = None
